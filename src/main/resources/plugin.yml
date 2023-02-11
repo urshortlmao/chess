@@ -1,0 +1,4 @@
+name: Chess
+version: '${project.version}'
+main: shortdev.chess.Chess
+api-version: 1.19
