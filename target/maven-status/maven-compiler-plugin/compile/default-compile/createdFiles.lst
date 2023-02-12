@@ -1,0 +1,7 @@
+shortdev\chess\ChessGUI.class
+shortdev\chess\constructors\Difficulty.class
+shortdev\chess\constructors\Game.class
+shortdev\chess\Chess.class
+shortdev\chess\constructors\GamePlayer.class
+shortdev\chess\constructors\Move.class
+shortdev\chess\constructors\Piece.class
