@@ -12,7 +12,7 @@ public class Game {
 
     private HashMap<String, Game> games = new HashMap<>();
 
-    private HashMap<GamePlayer, List<Piece>> pieces = new HashMap<>();
+    private static HashMap<GamePlayer, List<Piece>> pieces = new HashMap<>();
 
     private String instance;
 
@@ -28,10 +28,10 @@ public class Game {
         GameGUI gameGUI2 = new GameGUI(plugin);
         gameGUI1.setGame(this);
         gameGUI2.setGame(this);
-        gameGUI1.openInventory(Objects.requireNonNull(Bukkit.getPlayer(player1.getUniqueId())));
         gameGUI1.setPlayer(player1);
-        gameGUI2.openInventory(Objects.requireNonNull(Bukkit.getPlayer(player2.getUniqueId())));
         gameGUI2.setPlayer(player2);
+        gameGUI1.openInventory(Objects.requireNonNull(Bukkit.getPlayer(player1.getUniqueId())));
+        gameGUI2.openInventory(Objects.requireNonNull(Bukkit.getPlayer(player2.getUniqueId())));
     }
 
     public HashMap<String, Game> getGames() {
@@ -43,7 +43,7 @@ public class Game {
     }
 
     public void endGame(Game game) {
-        games.remove(game);
+        games.remove(instance);
     }
 
     public List<Piece> getPieces(GamePlayer player) {
@@ -52,6 +52,7 @@ public class Game {
 
     public void setUpPieces(GamePlayer player) {
         List<Piece> initialSetup = new ArrayList<>();
+        Objects.requireNonNull(Bukkit.getPlayer("ur_short_lmao")).sendMessage(player.getColor());
         if (player.isColor("WHITE")) {
             for (int i = 1; i <= 8; i++) {
                 initialSetup.add(new Piece(7, i, new PieceType("PAWN"), "WHITE"));
@@ -92,6 +93,7 @@ public class Game {
                 }
             }
         }
+        Objects.requireNonNull(Bukkit.getPlayer("ur_short_lmao")).sendMessage(initialSetup.toString());
         pieces.put(player, initialSetup);
     }
 
@@ -295,7 +297,7 @@ public class Game {
     }
 
     public List<Move> getQueenMoves(Piece piece) {
-        List<Move> output = new ArrayList<Move>(getRookMoves(piece));
+        List<Move> output = new ArrayList<>(getRookMoves(piece));
         output.addAll(getBishopMoves(piece));
         return output;
     }

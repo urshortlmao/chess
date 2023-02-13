@@ -35,7 +35,6 @@ public class GameGUI implements Listener {
     public GameGUI(Chess plugin) {
         this.plugin = plugin;
         inv = Bukkit.createInventory(null, 54, "Chess");
-        openInventory(Objects.requireNonNull(Bukkit.getPlayer(player.getUniqueId())));
     }
 
     @EventHandler
@@ -65,7 +64,7 @@ public class GameGUI implements Listener {
             for (Piece piece : pieces) {
                 int x = piece.getX();
                 int y = piece.getY();
-                int i = 8*y + x - 8;
+                int i = 8*y + x - 9;
                 if (i < 52) {
                     inv.setItem(i, piece.getType().getItem("WHITE"));
                 }
@@ -73,7 +72,7 @@ public class GameGUI implements Listener {
             for (Piece piece : opponentPieces) {
                 int x = piece.getX();
                 int y = piece.getY();
-                int i = 8*y + x - 8;
+                int i = 8*y + x - 9;
                 if (i < 52) {
                     inv.setItem(i, piece.getType().getItem("BLACK"));
                 }
@@ -83,7 +82,7 @@ public class GameGUI implements Listener {
             for (Piece piece : pieces) {
                 int x = piece.getX();
                 int y = piece.getY();
-                int i = 73 - x - 8*y;
+                int i = 72 - x - 8*y;
                 if (i < 52) {
                     inv.setItem(i, piece.getType().getItem("BLACK"));
                 }
@@ -91,7 +90,7 @@ public class GameGUI implements Listener {
             for (Piece piece : opponentPieces) {
                 int x = piece.getX();
                 int y = piece.getY();
-                int i = 73 - x - 8*y;
+                int i = 72 - x - 8*y;
                 if (i < 52) {
                     inv.setItem(i, piece.getType().getItem("WHITE"));
                 }
@@ -118,6 +117,7 @@ public class GameGUI implements Listener {
 
     public void setPlayer(GamePlayer player) {
         this.player = player;
+        openInventory(Objects.requireNonNull(Bukkit.getPlayer(player.getUniqueId())));
     }
 
     public void setGame(Game game) {
