@@ -30,9 +30,4 @@ public class GamePlayer {
         return Objects.equals(this.color, color);
     }
 
-    public boolean inCheck() {
-        // code
-        return false;
-    }
-
 }

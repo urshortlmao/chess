@@ -12,6 +12,7 @@ public final class Chess extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChessGUI(this), this);
         getServer().getPluginManager().registerEvents(new BrowseGUI(this), this);
         getServer().getPluginManager().registerEvents(new SettingsGUI(this), this);
+        getServer().getPluginManager().registerEvents(new GameGUI(this), this);
         Objects.requireNonNull(this.getCommand("chess")).setExecutor(new CommandManager(this));
     }
 

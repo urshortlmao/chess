@@ -2,3 +2,6 @@ name: Chess
 version: '1.0.0'
 main: shortdev.chess.Chess
 api-version: 1.19
+commands:
+  chess:
+    usage: /chess or /chess (player)

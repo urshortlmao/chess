@@ -34,35 +34,36 @@ public class PieceType {
         if (color.equals("WHITE")) {
             switch (name) {
                 case "PAWN":
-                    createGuiItem(Material.SNOWBALL, ChatColor.translateAlternateColorCodes('&', "&fPawn"), null);
+                    return createGuiItem(Material.SNOWBALL, ChatColor.translateAlternateColorCodes('&', "&fPawn"), null);
                 case "ROOK":
-                    createGuiItem(Material.DIORITE_WALL, ChatColor.translateAlternateColorCodes('&', "&fRook"), null);
+                    return createGuiItem(Material.DIORITE_WALL, ChatColor.translateAlternateColorCodes('&', "&fRook"), null);
                 case "KNIGHT":
-                    createGuiItem(Material.IRON_AXE, ChatColor.translateAlternateColorCodes('&', "&fKnight"), null);
+                    return createGuiItem(Material.IRON_AXE, ChatColor.translateAlternateColorCodes('&', "&fKnight"), null);
                 case "BISHOP":
-                    createGuiItem(Material.ARROW, ChatColor.translateAlternateColorCodes('&', "&fBishop"), null);
+                    return createGuiItem(Material.ARROW, ChatColor.translateAlternateColorCodes('&', "&fBishop"), null);
                 case "QUEEN":
-                    createGuiItem(Material.WHITE_TULIP, ChatColor.translateAlternateColorCodes('&', "&fQueen"), null);
+                    return createGuiItem(Material.WHITE_TULIP, ChatColor.translateAlternateColorCodes('&', "&fQueen"), null);
                 case "KING":
-                    createGuiItem(Material.IRON_SHOVEL, ChatColor.translateAlternateColorCodes('&', "&fKing"), null);
+                    return createGuiItem(Material.IRON_SHOVEL, ChatColor.translateAlternateColorCodes('&', "&fKing"), null);
             }
         }
         if (color.equals("BLACK")) {
             switch (name) {
                 case "PAWN":
-                    createGuiItem(Material.FLINT, ChatColor.translateAlternateColorCodes('&', "&0Pawn"), null);
+                    return createGuiItem(Material.FLINT, ChatColor.translateAlternateColorCodes('&', "&0Pawn"), null);
                 case "ROOK":
-                    createGuiItem(Material.POLISHED_DEEPSLATE_WALL, ChatColor.translateAlternateColorCodes('&', "&0Rook"), null);
+                    return createGuiItem(Material.POLISHED_DEEPSLATE_WALL, ChatColor.translateAlternateColorCodes('&', "&0Rook"), null);
                 case "KNIGHT":
-                    createGuiItem(Material.NETHERITE_AXE, ChatColor.translateAlternateColorCodes('&', "&0Knight"), null);
+                    return createGuiItem(Material.NETHERITE_AXE, ChatColor.translateAlternateColorCodes('&', "&0Knight"), null);
                 case "BISHOP":
-                    createGuiItem(Material.TIPPED_ARROW, ChatColor.translateAlternateColorCodes('&', "&0Bishop"), null);
+                    return createGuiItem(Material.TIPPED_ARROW, ChatColor.translateAlternateColorCodes('&', "&0Bishop"), null);
                 case "QUEEN":
-                    createGuiItem(Material.WHITE_TULIP, ChatColor.translateAlternateColorCodes('&', "&0Queen"), null);
+                    return createGuiItem(Material.WHITE_TULIP, ChatColor.translateAlternateColorCodes('&', "&0Queen"), null);
                 case "KING":
-                    createGuiItem(Material.IRON_SHOVEL, ChatColor.translateAlternateColorCodes('&', "&0King"), null);
+                    return createGuiItem(Material.IRON_SHOVEL, ChatColor.translateAlternateColorCodes('&', "&0King"), null);
             }
         }
+        return null;
     }
 
     protected ItemStack createGuiItem(final Material material, final String name, final List<String> lore) {

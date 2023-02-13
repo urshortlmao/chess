@@ -1,7 +1,13 @@
-shortdev\chess\ChessGUI.class
+shortdev\chess\BrowseGUI.class
+shortdev\chess\constructors\PieceType.class
+shortdev\chess\GameGUI.class
 shortdev\chess\constructors\Difficulty.class
-shortdev\chess\constructors\Game.class
+shortdev\chess\CommandManager.class
 shortdev\chess\Chess.class
 shortdev\chess\constructors\GamePlayer.class
 shortdev\chess\constructors\Move.class
 shortdev\chess\constructors\Piece.class
+shortdev\chess\BrowseMenu.class
+shortdev\chess\ChessGUI.class
+shortdev\chess\SettingsGUI.class
+shortdev\chess\constructors\Game.class

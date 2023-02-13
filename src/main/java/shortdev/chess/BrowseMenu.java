@@ -19,15 +19,15 @@ import java.util.List;
 
 import static org.bukkit.Material.*;
 
-public class BrowseGUI implements Listener {
+public class BrowseMenu implements Listener {
 
     private static Inventory inv;
 
     private final Chess plugin;
 
-    public BrowseGUI(Chess plugin) {
+    public BrowseMenu(Chess plugin) {
         this.plugin = plugin;
-        inv = Bukkit.createInventory(null, 27, "Chess against a player");
+        inv = Bukkit.createInventory(null, 54, "Browse Games");
         initializeItems();
     }
 
@@ -38,14 +38,6 @@ public class BrowseGUI implements Listener {
         final ItemStack clickedItem = e.getCurrentItem();
         if (clickedItem == null || clickedItem.getType().equals(AIR)) return;
         final Player p = (Player) e.getWhoClicked();
-        if (e.getRawSlot() == 11) {
-            p.closeInventory();
-            openAnvilGUI(p,"Type here");
-        }
-        if (e.getRawSlot() == 15) {
-            p.closeInventory();
-            new BrowseMenu(plugin).openInventory(p);
-        }
     }
 
     @EventHandler
@@ -74,18 +66,6 @@ public class BrowseGUI implements Listener {
 
     public void openInventory(final HumanEntity ent) {
         ent.openInventory(inv);
-    }
-
-    public void openAnvilGUI(Player player, String string) {
-        new AnvilGUI.Builder()
-                .plugin(plugin)
-                .title("Invite player")
-                .itemLeft(new ItemStack(Material.PAPER))
-                .text(string)
-                .onComplete(completion -> Arrays.asList(AnvilGUI.ResponseAction.run(() -> {
-
-                }), AnvilGUI.ResponseAction.close()))
-                .open(player);
     }
 
 }
