@@ -18,9 +18,13 @@ public class Game {
 
     private GamePlayer player1, player2;
 
+    private static HashMap<GamePlayer, Integer> scrollPositions = new HashMap<>();
+
     public Game(GamePlayer player1, GamePlayer player2, String instance) {
         this.player1 = player1;
         this.player2 = player2;
+        scrollPositions.put(player1, 0);
+        scrollPositions.put(player2, 0);
         this.instance = instance;
         setUpPieces(player1);
         setUpPieces(player2);
@@ -32,6 +36,14 @@ public class Game {
         gameGUI2.setPlayer(player2);
         gameGUI1.openInventory(Objects.requireNonNull(Bukkit.getPlayer(player1.getUniqueId())));
         gameGUI2.openInventory(Objects.requireNonNull(Bukkit.getPlayer(player2.getUniqueId())));
+    }
+
+    public int getScrollPosition(GamePlayer player) {
+        return scrollPositions.get(player);
+    }
+
+    public void setScrollPosition(GamePlayer player, int position) {
+        scrollPositions.put(player, position);
     }
 
     public HashMap<String, Game> getGames() {
@@ -52,48 +64,37 @@ public class Game {
 
     public void setUpPieces(GamePlayer player) {
         List<Piece> initialSetup = new ArrayList<>();
-        Objects.requireNonNull(Bukkit.getPlayer("ur_short_lmao")).sendMessage(player.getColor());
-        if (player.isColor("WHITE")) {
-            for (int i = 1; i <= 8; i++) {
-                initialSetup.add(new Piece(7, i, new PieceType("PAWN"), "WHITE"));
-                if (i == 1 || i == 8) {
-                    initialSetup.add(new Piece(8, i, new PieceType("ROOK"), "WHITE"));
-                }
-                if (i == 2 || i == 7) {
-                    initialSetup.add(new Piece(8, i, new PieceType("KNIGHT"), "WHITE"));
-                }
-                if (i == 3 || i == 6) {
-                    initialSetup.add(new Piece(8, i, new PieceType("BISHOP"), "WHITE"));
-                }
-                if (i == 4) {
-                    initialSetup.add(new Piece(8, i, new PieceType("QUEEN"), "WHITE"));
-                }
-                if (i == 5) {
-                    initialSetup.add(new Piece(8, i, new PieceType("KING"), "WHITE"));
-                }
-            }
+        String color = player.getColor();
+        int y1, y2;
+        if (color.equals("WHITE")) {
+            y1 = 2;
+            y2 = 1;
+        } else {
+            y1 = 7;
+            y2 = 8;
         }
-        if (player.isColor("BLACK")) {
-            for (int i = 1; i <= 8; i++) {
-                initialSetup.add(new Piece(2, i, new PieceType("PAWN"), "BLACK"));
-                if (i == 1 || i == 8) {
-                    initialSetup.add(new Piece(1, i, new PieceType("ROOK"), "BLACK"));
-                }
-                if (i == 2 || i == 7) {
-                    initialSetup.add(new Piece(1, i, new PieceType("KNIGHT"), "BLACK"));
-                }
-                if (i == 3 || i == 6) {
-                    initialSetup.add(new Piece(1, i, new PieceType("BISHOP"), "BLACK"));
-                }
-                if (i == 4) {
-                    initialSetup.add(new Piece(1, i, new PieceType("QUEEN"), "BLACK"));
-                }
-                if (i == 5) {
-                    initialSetup.add(new Piece(1, i, new PieceType("KING"), "BLACK"));
-                }
-            }
-        }
-        Objects.requireNonNull(Bukkit.getPlayer("ur_short_lmao")).sendMessage(initialSetup.toString());
+        //PAWNS
+        initialSetup.add(new Piece(1, y1, new PieceType("PAWN"), color));
+        initialSetup.add(new Piece(2, y1, new PieceType("PAWN"), color));
+        initialSetup.add(new Piece(3, y1, new PieceType("PAWN"), color));
+        initialSetup.add(new Piece(4, y1, new PieceType("PAWN"), color));
+        initialSetup.add(new Piece(5, y1, new PieceType("PAWN"), color));
+        initialSetup.add(new Piece(6, y1, new PieceType("PAWN"), color));
+        initialSetup.add(new Piece(7, y1, new PieceType("PAWN"), color));
+        initialSetup.add(new Piece(8, y1, new PieceType("PAWN"), color));
+        //ROOKS
+        initialSetup.add(new Piece(1, y2, new PieceType("ROOK"), color));
+        initialSetup.add(new Piece(8, y2, new PieceType("ROOK"), color));
+        //KNIGHTS
+        initialSetup.add(new Piece(2, y2, new PieceType("KNIGHT"), color));
+        initialSetup.add(new Piece(7, y2, new PieceType("KNIGHT"), color));
+        //BISHOPS
+        initialSetup.add(new Piece(3, y2, new PieceType("BISHOP"), color));
+        initialSetup.add(new Piece(6, y2, new PieceType("BISHOP"), color));
+        //QUEEN
+        initialSetup.add(new Piece(4, y2, new PieceType("QUEEN"), color));
+        //KING
+        initialSetup.add(new Piece(5, y2, new PieceType("KING"), color));
         pieces.put(player, initialSetup);
     }
 

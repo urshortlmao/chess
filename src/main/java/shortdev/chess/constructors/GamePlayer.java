@@ -7,15 +7,13 @@ import java.util.UUID;
 
 public class GamePlayer {
 
-    private Chess plugin;
+    private static UUID uniqueId;
 
-    private UUID uniqueId;
-
-    private String color;
+    private static String color;
 
     public GamePlayer(UUID uuid, String color) {
         uniqueId = uuid;
-        this.color = color;
+        GamePlayer.color = color;
     }
 
     public UUID getUniqueId() {
@@ -26,8 +24,8 @@ public class GamePlayer {
         return color;
     }
 
-    public boolean isColor(String color) {
-        return Objects.equals(this.color, color);
+    public static boolean isColor(String color) {
+        return Objects.equals(GamePlayer.color, color);
     }
 
 }
