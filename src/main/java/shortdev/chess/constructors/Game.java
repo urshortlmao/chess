@@ -1,6 +1,5 @@
 package shortdev.chess.constructors;
 
-import org.bukkit.Bukkit;
 import shortdev.chess.Chess;
 import shortdev.chess.GameGUI;
 
@@ -12,7 +11,7 @@ public class Game {
 
     private static TreeMap<String, Game> games = new TreeMap<>();
 
-    private static HashMap<GamePlayer, List<Piece>> pieces = new HashMap<>();
+    private static HashMap<GamePlayer, Piece[][]> pieces = new HashMap<>();
 
     private static String instance;
 
@@ -22,8 +21,8 @@ public class Game {
         Game.player1 = player1;
         Game.player2 = player2;
         Game.instance = instance;
-        List<Piece> player1Pieces = new ArrayList<>();
-        List<Piece> player2Pieces = new ArrayList<>();
+        Piece[][] player1Pieces = new Piece[8][6];
+        Piece[][] player2Pieces = new Piece[8][6];
         setUpPieces(player1, player1Pieces);
         setUpPieces(player2, player2Pieces);
         Game.pieces.put(player1, player1Pieces);
@@ -48,37 +47,70 @@ public class Game {
         games.remove(instance);
     }
 
-    public static List<Piece> getPieces(GamePlayer player) {
+    public static Piece[][] getPieces(GamePlayer player) {
         return pieces.get(player);
     }
 
-    public static void setUpPieces(GamePlayer player, List<Piece> initialSetup) {
+    public static void setUpPieces(GamePlayer player, Piece[][] pieces) {
+        pieces[0] = setUpPawns(player);
+        pieces[1] = setUpRooks(player);
+        pieces[2] = setUpKnights(player);
+        pieces[3] = setUpBishops(player);
+        pieces[4] = setUpQueen(player);
+        pieces[5] = setUpKing(player);
+    }
+
+    public static Piece[] setUpPawns(GamePlayer player) {
+        Piece[] initialSetup = new Piece[8];
         String color = player.getColor();
         int y1 = color.equals("WHITE") ? 2 : 7;
-        int y2 = color.equals("WHITE") ? 1 : 8;
-
-        // PAWNS
         for (int i = 1; i <= 8; i++) {
-            initialSetup.add(new Piece(i, y1, new PieceType("PAWN"), color));
+            initialSetup[i - 1] = new Piece(i, y1, new PieceType("PAWN"), color);
         }
+        return initialSetup;
+    }
 
-        // ROOKS
-        initialSetup.add(new Piece(1, y2, new PieceType("ROOK"), color));
-        initialSetup.add(new Piece(8, y2, new PieceType("ROOK"), color));
+    public static Piece[] setUpRooks(GamePlayer player) {
+        Piece[] initialSetup = new Piece[8];
+        String color = player.getColor();
+        int y2 = color.equals("WHITE") ? 1 : 8;
+        initialSetup[0] = new Piece(1, y2, new PieceType("ROOK"), color);
+        initialSetup[1] = new Piece(8, y2, new PieceType("ROOK"), color);
+        return initialSetup;
+    }
 
-        // KNIGHTS
-        initialSetup.add(new Piece(2, y2, new PieceType("KNIGHT"), color));
-        initialSetup.add(new Piece(7, y2, new PieceType("KNIGHT"), color));
+    public static Piece[] setUpKnights(GamePlayer player) {
+        Piece[] initialSetup = new Piece[8];
+        String color = player.getColor();
+        int y2 = color.equals("WHITE") ? 1 : 8;
+        initialSetup[0] = new Piece(2, y2, new PieceType("KNIGHT"), color);
+        initialSetup[1] = new Piece(7, y2, new PieceType("KNIGHT"), color);
+        return initialSetup;
+    }
 
-        // BISHOPS
-        initialSetup.add(new Piece(3, y2, new PieceType("BISHOP"), color));
-        initialSetup.add(new Piece(6, y2, new PieceType("BISHOP"), color));
+    public static Piece[] setUpBishops(GamePlayer player) {
+        Piece[] initialSetup = new Piece[8];
+        String color = player.getColor();
+        int y2 = color.equals("WHITE") ? 1 : 8;
+        initialSetup[0] = new Piece(3, y2, new PieceType("BISHOP"), color);
+        initialSetup[1] = new Piece(6, y2, new PieceType("BISHOP"), color);
+        return initialSetup;
+    }
 
-        // QUEEN
-        initialSetup.add(new Piece(4, y2, new PieceType("QUEEN"), color));
+    public static Piece[] setUpQueen(GamePlayer player) {
+        Piece[] initialSetup = new Piece[8];
+        String color = player.getColor();
+        int y2 = color.equals("WHITE") ? 1 : 8;
+        initialSetup[0] = new Piece(4, y2, new PieceType("QUEEN"), color);
+        return initialSetup;
+    }
 
-        // KING
-        //initialSetup.add(new Piece(5, y2, new PieceType("KING"), color));
+    public static Piece[] setUpKing(GamePlayer player) {
+        Piece[] initialSetup = new Piece[8];
+        String color = player.getColor();
+        int y2 = color.equals("WHITE") ? 1 : 8;
+        initialSetup[0] = new Piece(5, y2, new PieceType("KING"), color);
+        return initialSetup;
     }
 
     public GamePlayer getPlayer1() {
@@ -93,15 +125,17 @@ public class Game {
         return player == player1 ? player2 : player1;
     }
 
-    public HashMap<Piece, List<Move>> getPossibleMoves(GamePlayer player) {
+    /*public HashMap<Piece, List<Move>> getPossibleMoves(GamePlayer player) {
         HashMap<Piece, List<Move>> output = new HashMap<>();
         if (!inCheck(player)) {
-            for (Piece piece : pieces.get(player)) {
-                output.put(piece, findPossibleMoves(piece));
+            for (List<Piece> pieces : pieces.get(player)) {
+                for (Piece piece : pieces) {
+                    output.put(piece, findPossibleMoves(piece));
+                }
             }
         }
         return output;
-    }
+    }*/
 
     public List<Move> findPossibleMoves(Piece piece) {
         switch (piece.getType().getName()) {
@@ -297,16 +331,20 @@ public class Game {
 
     public boolean occupiedBySelf(int x, int y, String color) {
         if (player1.isColor(color)) {
-            for (Piece piece : getPieces(player1)) {
-                if (piece.getX() == x && piece.getY() == y) {
-                    return true;
+            for (Piece[] pieces : getPieces(player1)) {
+                for (Piece piece : pieces) {
+                    if (piece.getX() == x && piece.getY() == y) {
+                        return true;
+                    }
                 }
             }
         }
         if (player2.isColor(color)) {
-            for (Piece piece : getPieces(player2)) {
-                if (piece.getX() == x && piece.getY() == y) {
-                    return true;
+            for (Piece[] pieces : getPieces(player2)) {
+                for (Piece piece : pieces) {
+                    if (piece.getX() == x && piece.getY() == y) {
+                        return true;
+                    }
                 }
             }
         }
@@ -315,23 +353,27 @@ public class Game {
 
     public boolean occupiedByEnemy(int x, int y, String color) {
         if (player1.isColor(color)) {
-            for (Piece piece : getPieces(player2)) {
-                if (piece.getX() == x && piece.getY() == y) {
-                    return true;
+            for (Piece[] pieces : getPieces(player2)) {
+                for (Piece piece : pieces) {
+                    if (piece.getX() == x && piece.getY() == y) {
+                        return true;
+                    }
                 }
             }
         }
         if (player2.isColor(color)) {
-            for (Piece piece : getPieces(player1)) {
-                if (piece.getX() == x && piece.getY() == y) {
-                    return true;
+            for (Piece[] pieces : getPieces(player1)) {
+                for (Piece piece : pieces) {
+                    if (piece.getX() == x && piece.getY() == y) {
+                        return true;
+                    }
                 }
             }
         }
         return false;
     }
 
-    public boolean inCheck(GamePlayer player) {
+    /* public boolean inCheck(GamePlayer player) {
         int x = 1;
         int y = 1;
         for (Piece piece : getPieces(player)) {
@@ -349,6 +391,6 @@ public class Game {
             }
         }
         return false;
-    }
+    } */
 
 }

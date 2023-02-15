@@ -15,7 +15,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import shortdev.chess.constructors.Game;
 import shortdev.chess.constructors.GamePlayer;
 import shortdev.chess.constructors.Piece;
-import shortdev.chess.constructors.PieceType;
 
 import java.util.List;
 import java.util.Objects;
@@ -61,26 +60,34 @@ public class GameGUI implements Listener {
     }
 
     public void initializeItems() {
-        List<Piece> pieces = Game.getPieces(game.getPlayer1());
-        List<Piece> opponentPieces = Game.getPieces(game.getPlayer2());
+        Piece[][] pieces = Game.getPieces(game.getPlayer1());
+        Piece[][] opponentPieces = Game.getPieces(game.getPlayer2());
 
         for (int i = 0; i < 72; i++) {
             if (i % 9 < 8) {
                 int x = i % 9;
                 int y = 8 - i / 9;
                 boolean isOccupied = false;
-                for (Piece piece : pieces) {
-                    if (piece.getX() == x && piece.getY() == y) {
-                        System.out.println(piece.getType().getName());
-                        isOccupied = true;
-                        break;
+                for (Piece[] pieceArray : pieces) {
+                    for (Piece piece : pieceArray) {
+                        if (piece != null) {
+                            if (piece.getX() == x && piece.getY() == y) {
+                                System.out.println(piece.getType().getName());
+                                isOccupied = true;
+                                break;
+                            }
+                        }
                     }
                 }
-                for (Piece piece : opponentPieces) {
-                    if (piece.getX() == x && piece.getY() == y) {
-                        System.out.println(piece.getType().getName());
-                        isOccupied = true;
-                        break;
+                for (Piece[] pieceArray : opponentPieces) {
+                    for (Piece piece : pieceArray) {
+                        if (piece != null) {
+                            if (piece.getX() == x && piece.getY() == y) {
+                                System.out.println(piece.getType().getName());
+                                isOccupied = true;
+                                break;
+                            }
+                        }
                     }
                 }
                 if (!isOccupied) {
