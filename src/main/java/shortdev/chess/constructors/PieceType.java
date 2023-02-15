@@ -26,7 +26,7 @@ public class PieceType {
         return Objects.equals(str, name);
     }
 
-    public static String getName() {
+    public String getName() {
         return name;
     }
 

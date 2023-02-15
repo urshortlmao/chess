@@ -37,13 +37,13 @@ public class CommandManager implements CommandExecutor {
                     GamePlayer player1 = new GamePlayer(p.getUniqueId(), "WHITE");
                     GamePlayer player2 = new GamePlayer(Objects.requireNonNull(getPlayer(args[0])).getUniqueId(), "BLACK");
                     Game game = new Game(player1, player2, String.valueOf(p.getUniqueId()));
-                    game.createGame(game);
+                    Game.createGame(game);
                     return true;
                 }
                 GamePlayer player1 = new GamePlayer(p.getUniqueId(), "BLACK");
                 GamePlayer player2 = new GamePlayer(Objects.requireNonNull(getPlayer(args[0])).getUniqueId(), "WHITE");
                 Game game = new Game(player1, player2, String.valueOf(p.getUniqueId()));
-                game.createGame(game);
+                Game.createGame(game);
                 return true;
             }
         }

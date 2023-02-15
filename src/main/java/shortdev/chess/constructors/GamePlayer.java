@@ -24,7 +24,7 @@ public class GamePlayer {
         return color;
     }
 
-    public static boolean isColor(String color) {
+    public boolean isColor(String color) {
         return Objects.equals(GamePlayer.color, color);
     }
 

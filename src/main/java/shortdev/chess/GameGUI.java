@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -29,9 +30,9 @@ public class GameGUI implements Listener {
 
     private final Chess plugin;
 
-    private Game game;
+    private static Game game;
 
-    private GamePlayer player;
+    private static GamePlayer player;
 
     public GameGUI(Chess plugin) {
         this.plugin = plugin;
@@ -54,10 +55,14 @@ public class GameGUI implements Listener {
         }
     }
 
+    @EventHandler
+    public void onInventoryClose(final InventoryCloseEvent e) {
+        Game.endGame(game);
+    }
+
     public void initializeItems() {
-        List<Piece> pieces = game.getPieces(player);
-        List<Piece> opponentPieces = game.getPieces(game.getOpponent(player));
-        int start = Math.max(0, game.getScrollPosition(player) * 9);
+        List<Piece> pieces = Game.getPieces(game.getPlayer1());
+        List<Piece> opponentPieces = Game.getPieces(game.getPlayer2());
 
         for (int i = 0; i < 72; i++) {
             if (i % 9 < 8) {
@@ -66,12 +71,14 @@ public class GameGUI implements Listener {
                 boolean isOccupied = false;
                 for (Piece piece : pieces) {
                     if (piece.getX() == x && piece.getY() == y) {
+                        System.out.println(piece.getType().getName());
                         isOccupied = true;
                         break;
                     }
                 }
                 for (Piece piece : opponentPieces) {
                     if (piece.getX() == x && piece.getY() == y) {
+                        System.out.println(piece.getType().getName());
                         isOccupied = true;
                         break;
                     }
@@ -84,7 +91,7 @@ public class GameGUI implements Listener {
                             pInv.setItem(i - 45, new ItemStack(WHITE_STAINED_GLASS_PANE));
                         }
                     } else {
-                        if (i < 53) {
+                        if (i < 54) {
                             inv.setItem(i, new ItemStack(BLACK_STAINED_GLASS_PANE));
                         } else {
                             pInv.setItem(i - 45, new ItemStack(BLACK_STAINED_GLASS_PANE));
@@ -98,42 +105,6 @@ public class GameGUI implements Listener {
                     pInv.setItem(i - 45, new ItemStack(GRAY_STAINED_GLASS_PANE));
                 }
             }
-        }
-
-        // add pieces to GUI
-        int count = 0;
-        for (Piece piece : pieces) {
-            int x = piece.getX();
-            int y = piece.getY();
-            int index = (8 - y) * 9 + x;
-            if (index >= start && count < 48) {
-                if (index - start < 54) {
-                    inv.setItem(index - start, PieceType.getItem(piece.getType(), piece.getColor()));
-                } else {
-                    pInv.setItem(index - start - 45, PieceType.getItem(piece.getType(), piece.getColor()));
-                }
-                count++;
-            }
-        }
-        for (Piece piece : opponentPieces) {
-            int x = piece.getX();
-            int y = piece.getY();
-            int index = (8 - y) * 9 + x;
-            if (index >= start && count < 48) {
-                if (index - start < 54) {
-                    inv.setItem(index - start, PieceType.getItem(piece.getType(), piece.getColor()));
-                } else {
-                    pInv.setItem(index - start - 45, PieceType.getItem(piece.getType(), piece.getColor()));
-                }
-                count++;
-            }
-        }
-
-        // add scrolling item to GUI
-        if (start > 0) {
-            inv.setItem(53, new ItemStack(ARROW, 1));
-        } else {
-            inv.setItem(53, new ItemStack(GRAY_STAINED_GLASS_PANE, 1));
         }
     }
 
@@ -156,7 +127,7 @@ public class GameGUI implements Listener {
     }
 
     public void setPlayer(GamePlayer player) {
-        this.player = player;
+        GameGUI.player = player;
         if (Objects.requireNonNull(Bukkit.getPlayer(player.getUniqueId())).isOnline()) {
             pInv = Objects.requireNonNull(Bukkit.getPlayer(player.getUniqueId())).getInventory();
             openInventory(Objects.requireNonNull(Bukkit.getPlayer(player.getUniqueId())));
@@ -166,7 +137,7 @@ public class GameGUI implements Listener {
     }
 
     public void setGame(Game game) {
-        this.game = game;
+        GameGUI.game = game;
     }
 
 }

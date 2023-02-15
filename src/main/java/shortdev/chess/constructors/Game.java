@@ -8,94 +8,77 @@ import java.util.*;
 
 public class Game {
 
-    private Chess plugin;
+    private static Chess plugin;
 
-    private HashMap<String, Game> games = new HashMap<>();
+    private static TreeMap<String, Game> games = new TreeMap<>();
 
     private static HashMap<GamePlayer, List<Piece>> pieces = new HashMap<>();
 
-    private String instance;
+    private static String instance;
 
-    private GamePlayer player1, player2;
-
-    private static HashMap<GamePlayer, Integer> scrollPositions = new HashMap<>();
+    private static GamePlayer player1, player2;
 
     public Game(GamePlayer player1, GamePlayer player2, String instance) {
-        this.player1 = player1;
-        this.player2 = player2;
-        scrollPositions.put(player1, 0);
-        scrollPositions.put(player2, 0);
-        this.instance = instance;
-        setUpPieces(player1);
-        setUpPieces(player2);
-        GameGUI gameGUI1 = new GameGUI(plugin);
-        GameGUI gameGUI2 = new GameGUI(plugin);
-        gameGUI1.setGame(this);
-        gameGUI2.setGame(this);
-        gameGUI1.setPlayer(player1);
-        gameGUI2.setPlayer(player2);
-        gameGUI1.openInventory(Objects.requireNonNull(Bukkit.getPlayer(player1.getUniqueId())));
-        gameGUI2.openInventory(Objects.requireNonNull(Bukkit.getPlayer(player2.getUniqueId())));
+        Game.player1 = player1;
+        Game.player2 = player2;
+        Game.instance = instance;
+        List<Piece> player1Pieces = new ArrayList<>();
+        List<Piece> player2Pieces = new ArrayList<>();
+        setUpPieces(player1, player1Pieces);
+        setUpPieces(player2, player2Pieces);
+        Game.pieces.put(player1, player1Pieces);
+        Game.pieces.put(player2, player2Pieces);
     }
 
-    public int getScrollPosition(GamePlayer player) {
-        return scrollPositions.get(player);
-    }
-
-    public void setScrollPosition(GamePlayer player, int position) {
-        scrollPositions.put(player, position);
-    }
-
-    public HashMap<String, Game> getGames() {
+    public static TreeMap<String, Game> getGames() {
         return games;
     }
 
-    public void createGame(Game game) {
+    public static void createGame(Game game) {
         games.put(instance, game);
+        GameGUI gameGUI1 = new GameGUI(plugin);
+        GameGUI gameGUI2 = new GameGUI(plugin);
+        gameGUI1.setGame(game);
+        gameGUI2.setGame(game);
+        gameGUI1.setPlayer(player1);
+        gameGUI2.setPlayer(player2);
     }
 
-    public void endGame(Game game) {
+    public static void endGame(Game game) {
         games.remove(instance);
     }
 
-    public List<Piece> getPieces(GamePlayer player) {
+    public static List<Piece> getPieces(GamePlayer player) {
         return pieces.get(player);
     }
 
-    public void setUpPieces(GamePlayer player) {
-        List<Piece> initialSetup = new ArrayList<>();
+    public static void setUpPieces(GamePlayer player, List<Piece> initialSetup) {
         String color = player.getColor();
-        int y1, y2;
-        if (color.equals("WHITE")) {
-            y1 = 2;
-            y2 = 1;
-        } else {
-            y1 = 7;
-            y2 = 8;
+        int y1 = color.equals("WHITE") ? 2 : 7;
+        int y2 = color.equals("WHITE") ? 1 : 8;
+
+        // PAWNS
+        for (int i = 1; i <= 8; i++) {
+            initialSetup.add(new Piece(i, y1, new PieceType("PAWN"), color));
         }
-        //PAWNS
-        initialSetup.add(new Piece(1, y1, new PieceType("PAWN"), color));
-        initialSetup.add(new Piece(2, y1, new PieceType("PAWN"), color));
-        initialSetup.add(new Piece(3, y1, new PieceType("PAWN"), color));
-        initialSetup.add(new Piece(4, y1, new PieceType("PAWN"), color));
-        initialSetup.add(new Piece(5, y1, new PieceType("PAWN"), color));
-        initialSetup.add(new Piece(6, y1, new PieceType("PAWN"), color));
-        initialSetup.add(new Piece(7, y1, new PieceType("PAWN"), color));
-        initialSetup.add(new Piece(8, y1, new PieceType("PAWN"), color));
-        //ROOKS
+
+        // ROOKS
         initialSetup.add(new Piece(1, y2, new PieceType("ROOK"), color));
         initialSetup.add(new Piece(8, y2, new PieceType("ROOK"), color));
-        //KNIGHTS
+
+        // KNIGHTS
         initialSetup.add(new Piece(2, y2, new PieceType("KNIGHT"), color));
         initialSetup.add(new Piece(7, y2, new PieceType("KNIGHT"), color));
-        //BISHOPS
+
+        // BISHOPS
         initialSetup.add(new Piece(3, y2, new PieceType("BISHOP"), color));
         initialSetup.add(new Piece(6, y2, new PieceType("BISHOP"), color));
-        //QUEEN
+
+        // QUEEN
         initialSetup.add(new Piece(4, y2, new PieceType("QUEEN"), color));
-        //KING
-        initialSetup.add(new Piece(5, y2, new PieceType("KING"), color));
-        pieces.put(player, initialSetup);
+
+        // KING
+        //initialSetup.add(new Piece(5, y2, new PieceType("KING"), color));
     }
 
     public GamePlayer getPlayer1() {
@@ -107,13 +90,7 @@ public class Game {
     }
 
     public GamePlayer getOpponent(GamePlayer player) {
-        if (player == player1) {
-            return player2;
-        }
-        if (player == player2) {
-            return player1;
-        }
-        return null;
+        return player == player1 ? player2 : player1;
     }
 
     public HashMap<Piece, List<Move>> getPossibleMoves(GamePlayer player) {
