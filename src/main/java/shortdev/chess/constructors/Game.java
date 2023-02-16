@@ -1,57 +1,68 @@
 package shortdev.chess.constructors;
 
-import shortdev.chess.Chess;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import shortdev.chess.GameGUI;
 
 import java.util.*;
 
 public class Game {
 
-    private static Chess plugin;
-
     private static TreeMap<String, Game> games = new TreeMap<>();
 
-    private static HashMap<GamePlayer, Piece[][]> pieces = new HashMap<>();
+    private HashMap<GamePlayer, Piece[][]> pieces = new HashMap<>();
 
-    private static String instance;
+    private HashMap<GamePlayer, Piece[][]> tempPieces = new HashMap<>();
 
-    private static GamePlayer player1, player2;
+    private String instance;
+
+    private GamePlayer player1, player2;
 
     public Game(GamePlayer player1, GamePlayer player2, String instance) {
-        Game.player1 = player1;
-        Game.player2 = player2;
-        Game.instance = instance;
+        this.player1 = player1;
+        this.player2 = player2;
+        this.instance = instance;
         Piece[][] player1Pieces = new Piece[8][6];
         Piece[][] player2Pieces = new Piece[8][6];
         setUpPieces(player1, player1Pieces);
         setUpPieces(player2, player2Pieces);
-        Game.pieces.put(player1, player1Pieces);
-        Game.pieces.put(player2, player2Pieces);
+        this.pieces.put(player1, player1Pieces);
+        this.pieces.put(player2, player2Pieces);
+        updatePieces();
     }
 
     public static TreeMap<String, Game> getGames() {
         return games;
     }
 
-    public static void createGame(Game game) {
-        games.put(instance, game);
-        GameGUI gameGUI1 = new GameGUI(plugin);
-        GameGUI gameGUI2 = new GameGUI(plugin);
-        gameGUI1.setGame(game);
-        gameGUI2.setGame(game);
-        gameGUI1.setPlayer(player1);
-        gameGUI2.setPlayer(player2);
+    public void createGame() {
+        games.put(instance, this);
+        new GameGUI().setGame(this);
     }
 
     public static void endGame(Game game) {
-        games.remove(instance);
+        Inventory inv1 = Objects.requireNonNull(Bukkit.getPlayer(game.getPlayer1().getUniqueId())).getInventory();
+        Inventory inv2 = Objects.requireNonNull(Bukkit.getPlayer(game.getPlayer2().getUniqueId())).getInventory();
+        for (int i = 9; i < 27; i++) {
+            inv1.setItem(i, new ItemStack(Material.AIR));
+            inv2.setItem(i, new ItemStack(Material.AIR));
+        }
+        for (String string : games.keySet()) {
+            if (games.get(string).equals(game)) {
+                games.remove(string);
+            }
+        }
+        GameGUI.closeInventory(Objects.requireNonNull(Bukkit.getPlayer(game.getPlayer1().getUniqueId())));
+        GameGUI.closeInventory(Objects.requireNonNull(Bukkit.getPlayer(game.getPlayer2().getUniqueId())));
     }
 
-    public static Piece[][] getPieces(GamePlayer player) {
+    public Piece[][] getPieces(GamePlayer player) {
         return pieces.get(player);
     }
 
-    public static void setUpPieces(GamePlayer player, Piece[][] pieces) {
+    public void setUpPieces(GamePlayer player, Piece[][] pieces) {
         pieces[0] = setUpPawns(player);
         pieces[1] = setUpRooks(player);
         pieces[2] = setUpKnights(player);
@@ -60,7 +71,7 @@ public class Game {
         pieces[5] = setUpKing(player);
     }
 
-    public static Piece[] setUpPawns(GamePlayer player) {
+    public Piece[] setUpPawns(GamePlayer player) {
         Piece[] initialSetup = new Piece[8];
         String color = player.getColor();
         int y1 = color.equals("WHITE") ? 2 : 7;
@@ -70,7 +81,7 @@ public class Game {
         return initialSetup;
     }
 
-    public static Piece[] setUpRooks(GamePlayer player) {
+    public Piece[] setUpRooks(GamePlayer player) {
         Piece[] initialSetup = new Piece[8];
         String color = player.getColor();
         int y2 = color.equals("WHITE") ? 1 : 8;
@@ -79,7 +90,7 @@ public class Game {
         return initialSetup;
     }
 
-    public static Piece[] setUpKnights(GamePlayer player) {
+    public Piece[] setUpKnights(GamePlayer player) {
         Piece[] initialSetup = new Piece[8];
         String color = player.getColor();
         int y2 = color.equals("WHITE") ? 1 : 8;
@@ -88,7 +99,7 @@ public class Game {
         return initialSetup;
     }
 
-    public static Piece[] setUpBishops(GamePlayer player) {
+    public Piece[] setUpBishops(GamePlayer player) {
         Piece[] initialSetup = new Piece[8];
         String color = player.getColor();
         int y2 = color.equals("WHITE") ? 1 : 8;
@@ -97,7 +108,7 @@ public class Game {
         return initialSetup;
     }
 
-    public static Piece[] setUpQueen(GamePlayer player) {
+    public Piece[] setUpQueen(GamePlayer player) {
         Piece[] initialSetup = new Piece[8];
         String color = player.getColor();
         int y2 = color.equals("WHITE") ? 1 : 8;
@@ -105,7 +116,7 @@ public class Game {
         return initialSetup;
     }
 
-    public static Piece[] setUpKing(GamePlayer player) {
+    public Piece[] setUpKing(GamePlayer player) {
         Piece[] initialSetup = new Piece[8];
         String color = player.getColor();
         int y2 = color.equals("WHITE") ? 1 : 8;
@@ -125,17 +136,15 @@ public class Game {
         return player == player1 ? player2 : player1;
     }
 
-    /*public HashMap<Piece, List<Move>> getPossibleMoves(GamePlayer player) {
+    public HashMap<Piece, List<Move>> getPossibleMoves(GamePlayer player) {
         HashMap<Piece, List<Move>> output = new HashMap<>();
-        if (!inCheck(player)) {
-            for (List<Piece> pieces : pieces.get(player)) {
-                for (Piece piece : pieces) {
-                    output.put(piece, findPossibleMoves(piece));
-                }
+        for (Piece[] pieces : pieces.get(player)) {
+            for (Piece piece : pieces) {
+                output.put(piece, findPossibleMoves(piece));
             }
         }
         return output;
-    }*/
+    }
 
     public List<Move> findPossibleMoves(Piece piece) {
         switch (piece.getType().getName()) {
@@ -326,6 +335,7 @@ public class Game {
                 }
             }
         }
+        if
         return output;
     }
 
@@ -373,14 +383,16 @@ public class Game {
         return false;
     }
 
-    /* public boolean inCheck(GamePlayer player) {
+    public boolean inCheck(GamePlayer player) {
         int x = 1;
         int y = 1;
-        for (Piece piece : getPieces(player)) {
-            if (piece.getType().equals("KING")) {
-                x = piece.getX();
-                y = piece.getY();
-                break;
+        for (Piece[] pieceArray : getPieces(player)) {
+            for (Piece piece : pieceArray) {
+                if (piece.getType().equals("KING")) {
+                    x = piece.getX();
+                    y = piece.getY();
+                    break;
+                }
             }
         }
         for (List<Move> moves : getPossibleMoves(getOpponent(player)).values()) {
@@ -391,6 +403,44 @@ public class Game {
             }
         }
         return false;
-    } */
+    }
+
+    public boolean stillInCheck(GamePlayer player, Move m) {
+        executeMove(m);
+        int x = 1;
+        int y = 1;
+        for (Piece[] pieceArray : getPieces(player)) {
+            for (Piece piece : pieceArray) {
+                if (piece.getType().equals("KING")) {
+                    x = piece.getX();
+                    y = piece.getY();
+                    break;
+                }
+            }
+        }
+        int i = 0;
+        for (List<Move> moves : getPossibleMoves(getOpponent(player)).values()) {
+            for (Move move : moves) {
+                if (move.getAfterX() == x && move.getAfterY() == y) {
+                    //checkingPieces.add(move.getPiece());
+                }
+                i++;
+            }
+        }
+
+    }
+
+    public void executeMove(GamePlayer player, Move move) {
+        Piece piece = move.getPiece();
+        piece.setMoved();
+        int x = move.getAfterX();
+        int y = move.getAfterY();
+        piece.setX(x);
+        piece.setY(y);
+    }
+
+    public void emulateMove(GamePlayer player, Move move) {
+
+    }
 
 }

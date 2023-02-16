@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -23,24 +22,20 @@ import static org.bukkit.Material.*;
 
 public class GameGUI implements Listener {
 
-    private static Inventory inv;
-
-    private static Inventory pInv;
-
-    private final Chess plugin;
+    private Inventory inv1, inv2, pInv1, pInv2;
 
     private static Game game;
 
-    private static GamePlayer player;
+    private GamePlayer player1, player2;
 
-    public GameGUI(Chess plugin) {
-        this.plugin = plugin;
-        inv = Bukkit.createInventory(null, 54, "Chess");
+    public GameGUI() {
+        inv1 = Bukkit.createInventory(null, 54, "Chess");
+        inv2 = Bukkit.createInventory(null, 54, "Chess");
     }
 
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent e) {
-        if (!e.getInventory().equals(inv)) return;
+        if (!e.getInventory().equals(inv1) && !e.getInventory().equals(inv2)) return;
         e.setCancelled(true);
         final ItemStack clickedItem = e.getCurrentItem();
         if (clickedItem == null || clickedItem.getType().equals(AIR)) return;
@@ -49,30 +44,37 @@ public class GameGUI implements Listener {
 
     @EventHandler
     public void onInventoryClick(final InventoryDragEvent e) {
-        if (e.getInventory().equals(inv)) {
+        if (e.getInventory().equals(inv1) || e.getInventory().equals(inv2)) {
             e.setCancelled(true);
         }
     }
 
-    @EventHandler
-    public void onInventoryClose(final InventoryCloseEvent e) {
-        Game.endGame(game);
+    public static void closeInventory(Player player) {
+        player.closeInventory();
     }
 
-    public void initializeItems() {
-        Piece[][] pieces = Game.getPieces(game.getPlayer1());
-        Piece[][] opponentPieces = Game.getPieces(game.getPlayer2());
+    public void initializeItems(Player player) {
+        boolean isPlayer1 = Objects.equals(Bukkit.getPlayer(player1.getUniqueId()), player);
+        GamePlayer p = isPlayer1 ? player1 : player2;
+        Inventory inv = isPlayer1 ? inv1 : inv2;
+        Inventory pInv = isPlayer1 ? pInv1 : pInv2;
+        Piece[][] pieces = game.getPieces(p);
+        Piece[][] opponentPieces = game.getPieces(game.getOpponent(p));
 
         for (int i = 0; i < 72; i++) {
             if (i % 9 < 8) {
-                int x = i % 9;
+                int x = i % 9 + 1;
                 int y = 8 - i / 9;
                 boolean isOccupied = false;
                 for (Piece[] pieceArray : pieces) {
                     for (Piece piece : pieceArray) {
                         if (piece != null) {
                             if (piece.getX() == x && piece.getY() == y) {
-                                System.out.println(piece.getType().getName());
+                                if (i < 54) {
+                                    inv.setItem(i, piece.getType().getItem(piece.getColor()));
+                                } else {
+                                    pInv.setItem(i - 45, piece.getType().getItem(piece.getColor()));
+                                }
                                 isOccupied = true;
                                 break;
                             }
@@ -83,7 +85,11 @@ public class GameGUI implements Listener {
                     for (Piece piece : pieceArray) {
                         if (piece != null) {
                             if (piece.getX() == x && piece.getY() == y) {
-                                System.out.println(piece.getType().getName());
+                                if (i < 54) {
+                                    inv.setItem(i, piece.getType().getItem(piece.getColor()));
+                                } else {
+                                    pInv.setItem(i - 45, piece.getType().getItem(piece.getColor()));
+                                }
                                 isOccupied = true;
                                 break;
                             }
@@ -128,23 +134,19 @@ public class GameGUI implements Listener {
         return item;
     }
 
-    public void openInventory(final HumanEntity ent) {
+    public void openInventory(final HumanEntity ent, Inventory inv) {
         ent.openInventory(inv);
-        initializeItems();
-    }
-
-    public void setPlayer(GamePlayer player) {
-        GameGUI.player = player;
-        if (Objects.requireNonNull(Bukkit.getPlayer(player.getUniqueId())).isOnline()) {
-            pInv = Objects.requireNonNull(Bukkit.getPlayer(player.getUniqueId())).getInventory();
-            openInventory(Objects.requireNonNull(Bukkit.getPlayer(player.getUniqueId())));
-        } else {
-            Bukkit.broadcastMessage("Error");
-        }
+        initializeItems((Player) ent);
     }
 
     public void setGame(Game game) {
         GameGUI.game = game;
+        player1 = game.getPlayer1();
+        player2 = game.getPlayer2();
+        pInv1 = Objects.requireNonNull(Bukkit.getPlayer(player1.getUniqueId())).getInventory();
+        pInv2 = Objects.requireNonNull(Bukkit.getPlayer(player2.getUniqueId())).getInventory();
+        openInventory(Objects.requireNonNull(Bukkit.getPlayer(player1.getUniqueId())), inv1);
+        openInventory(Objects.requireNonNull(Bukkit.getPlayer(player2.getUniqueId())), inv2);
     }
 
 }

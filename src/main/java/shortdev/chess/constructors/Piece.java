@@ -8,19 +8,21 @@ public class Piece {
 
     private Chess plugin;
 
-    private static Set<Move> possibleMoves;
+    private Set<Move> possibleMoves;
 
-    private static int x,y;
+    private int x,y;
 
-    private static PieceType type;
+    private PieceType type;
 
-    private static String color;
+    private String color;
+
+    private boolean moved = false;
 
     public Piece(int x, int y, PieceType type, String color) {
-        Piece.x = x;
-        Piece.y = y;
-        Piece.type = type;
-        Piece.color = color;
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.color = color;
     }
 
     public Set<Move> getPossibleMoves() {
@@ -36,11 +38,11 @@ public class Piece {
     }
 
     public void setX(int x) {
-        Piece.x = x;
+        this.x = x;
     }
 
     public void setY(int y) {
-        Piece.y = y;
+        this.y = y;
     }
 
     public PieceType getType() {
@@ -49,6 +51,14 @@ public class Piece {
 
     public String getColor() {
         return color;
+    }
+
+    public boolean hasMoved() {
+        return this.moved;
+    }
+
+    public void setMoved() {
+        moved = true;
     }
 
 }

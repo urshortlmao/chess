@@ -1,7 +1,5 @@
 package shortdev.chess.constructors;
 
-import shortdev.chess.Chess;
-
 import java.util.Objects;
 import java.util.UUID;
 
@@ -9,11 +7,11 @@ public class GamePlayer {
 
     private static UUID uniqueId;
 
-    private static String color;
+    private String color;
 
     public GamePlayer(UUID uuid, String color) {
         uniqueId = uuid;
-        GamePlayer.color = color;
+        this.color = color;
     }
 
     public UUID getUniqueId() {
@@ -25,7 +23,7 @@ public class GamePlayer {
     }
 
     public boolean isColor(String color) {
-        return Objects.equals(GamePlayer.color, color);
+        return Objects.equals(this.color, color);
     }
 
 }

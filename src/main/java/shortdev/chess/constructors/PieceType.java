@@ -16,13 +16,13 @@ public class PieceType {
 
     private Chess plugin;
 
-    private static String name;
+    private String name;
 
     public PieceType(String name) {
-        PieceType.name = name;
+        this.name = name;
     }
 
-    public static boolean equals(String str) {
+    public boolean equals(String str) {
         return Objects.equals(str, name);
     }
 
@@ -30,7 +30,7 @@ public class PieceType {
         return name;
     }
 
-    public static ItemStack getItem(PieceType type, String color) {
+    public ItemStack getItem(String color) {
         if (color.equals("WHITE")) {
             switch (name) {
                 case "PAWN":
@@ -66,7 +66,7 @@ public class PieceType {
         return null;
     }
 
-    protected static ItemStack createGuiItem(final Material material, final String name, final List<String> lore) {
+    protected ItemStack createGuiItem(final Material material, final String name, final List<String> lore) {
         final ItemStack item = new ItemStack(material, 1);
         final ItemMeta meta = item.getItemMeta();
         assert meta != null;
