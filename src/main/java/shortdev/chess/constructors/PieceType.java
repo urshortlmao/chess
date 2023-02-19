@@ -2,6 +2,8 @@ package shortdev.chess.constructors;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -18,6 +20,8 @@ public class PieceType {
 
     private String name;
 
+    private boolean highlighted;
+
     public PieceType(String name) {
         this.name = name;
     }
@@ -30,7 +34,8 @@ public class PieceType {
         return name;
     }
 
-    public ItemStack getItem(String color) {
+    public ItemStack getItem(String color, boolean highlighted) {
+        this.highlighted = highlighted;
         if (color.equals("WHITE")) {
             switch (name) {
                 case "PAWN":
@@ -77,12 +82,22 @@ public class PieceType {
             if (lore != null) {
                 potionMeta.setLore(lore);
             }
+            if (highlighted) {
+                item.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1);
+                potionMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            }
+            potionMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             item.setItemMeta(potionMeta);
         } else {
             meta.setDisplayName(name);
             if (lore != null) {
                 meta.setLore(lore);
             }
+            if (highlighted) {
+                item.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1);
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            }
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             item.setItemMeta(meta);
         }
         return item;

@@ -12,7 +12,7 @@ public class Game {
 
     private static TreeMap<String, Game> games = new TreeMap<>();
 
-    private HashMap<GamePlayer, Piece[][]> pieces = new HashMap<>();
+    private static HashMap<GamePlayer, Piece[][]> pieces = new HashMap<>();
 
     private HashMap<GamePlayer, Piece[][]> tempPieces = new HashMap<>();
 
@@ -28,9 +28,9 @@ public class Game {
         Piece[][] player2Pieces = new Piece[8][6];
         setUpPieces(player1, player1Pieces);
         setUpPieces(player2, player2Pieces);
-        this.pieces.put(player1, player1Pieces);
-        this.pieces.put(player2, player2Pieces);
-        updatePieces();
+        Game.pieces.put(player1, player1Pieces);
+        Game.pieces.put(player2, player2Pieces);
+        //updatePieces();
     }
 
     public static TreeMap<String, Game> getGames() {
@@ -335,7 +335,7 @@ public class Game {
                 }
             }
         }
-        if
+        //if
         return output;
     }
 
@@ -406,7 +406,7 @@ public class Game {
     }
 
     public boolean stillInCheck(GamePlayer player, Move m) {
-        executeMove(m);
+        //executeMove(m);
         int x = 1;
         int y = 1;
         for (Piece[] pieceArray : getPieces(player)) {
@@ -427,7 +427,7 @@ public class Game {
                 i++;
             }
         }
-
+        return false;
     }
 
     public void executeMove(GamePlayer player, Move move) {

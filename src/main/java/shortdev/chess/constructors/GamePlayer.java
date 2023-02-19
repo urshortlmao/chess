@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class GamePlayer {
 
-    private static UUID uniqueId;
+    private UUID uniqueId;
 
     private String color;
 
