@@ -2,6 +2,7 @@ package shortdev.chess.constructors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import shortdev.chess.GameGUI;
@@ -37,6 +38,32 @@ public class Game {
         return games;
     }
 
+    public static boolean isInGame(Player player) {
+        for (Game game : games.values()) {
+            if (Objects.equals(Bukkit.getPlayer(game.getPlayer1().getUniqueId()), player) || Objects.equals(Bukkit.getPlayer(game.getPlayer2().getUniqueId()), player)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static Game inGame(GamePlayer player) {
+        for (Game game : games.values()) {
+            if (Objects.equals(game.getPlayer1(), player) || Objects.equals(game.getPlayer2(), player)) {
+                return game;
+            }
+        }
+        return null;
+    }
+
+    public static GamePlayer getGamePlayer(Player player) {
+        for (Game game : games.values()) {
+            if (Objects.equals(Bukkit.getPlayer(game.getPlayer1().getUniqueId()), player)) return game.getPlayer1();
+            if (Objects.equals(Bukkit.getPlayer(game.getPlayer2().getUniqueId()), player)) return game.getPlayer2();
+        }
+        return null;
+    }
+
     public void createGame() {
         games.put(instance, this);
         new GameGUI().setGame(this);
@@ -58,7 +85,7 @@ public class Game {
         GameGUI.closeInventory(Objects.requireNonNull(Bukkit.getPlayer(game.getPlayer2().getUniqueId())));
     }
 
-    public Piece[][] getPieces(GamePlayer player) {
+    public static Piece[][] getPieces(GamePlayer player) {
         return pieces.get(player);
     }
 
