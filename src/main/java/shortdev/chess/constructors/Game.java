@@ -15,8 +15,6 @@ public class Game {
 
     private static HashMap<GamePlayer, Piece[][]> pieces = new HashMap<>();
 
-    private HashMap<GamePlayer, Piece[][]> tempPieces = new HashMap<>();
-
     private String instance;
 
     private GamePlayer player1, player2;

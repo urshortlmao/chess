@@ -9,5 +9,6 @@ shortdev\chess\constructors\Move.class
 shortdev\chess\constructors\Piece.class
 shortdev\chess\BrowseMenu.class
 shortdev\chess\ChessGUI.class
+shortdev\chess\HighlightedGUI.class
 shortdev\chess\SettingsGUI.class
 shortdev\chess\constructors\Game.class

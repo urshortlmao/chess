@@ -8,7 +8,7 @@ public class Piece {
 
     private Chess plugin;
 
-    private Set<Move> possibleMoves;
+    private List<Move> possibleMoves;
 
     private int x,y;
 
@@ -25,7 +25,7 @@ public class Piece {
         this.color = color;
     }
 
-    public Set<Move> getPossibleMoves() {
+    public List<Move> getPossibleMoves() {
         return possibleMoves;
     }
 
